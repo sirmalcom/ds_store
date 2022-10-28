@@ -38,20 +38,26 @@ const usuarioSchema = new mongoose.Schema({
     },
     resetPasswordToken: String,
     resetPasswordTime: Date,
-})
+});
 
 // Hash Contraseña
 
 usuarioSchema.pre("save",async function(next){
     this.contraseña = await bcrypt.hash(this.contraseña,10)
-})
+});
 
 //jwt token
 
 usuarioSchema.methods.getJwtToken = function(){
     return jwt.sign({id:this._id}, process.env.JWT_SECRET_KEY,{
         expiresIn: process.env.JWT_EXPIRES
-    })
-}
+    });
+};
 
-module.exports = mongoose.model("Usuario", usuarioSchema)
+// comparar contraseñas hash
+
+usuarioSchema.methods.comparePassword = async function(enteredPassword){
+    return await bcrypt.compare(enteredPassword,this.contraseña)
+};
+
+module.exports = mongoose.model("Usuario", usuarioSchema);
