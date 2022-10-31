@@ -7,12 +7,13 @@ const {
   deleteProducto,
   getSingleProducto,
 } = require("../controllers/ProductoController");
+const { isAuthenticatedUser,authorizeRoles } = require("../middleware/auth");
 
 const router = express.Router();
 
 router.route("/productos").get(getAllProductos);
 
-router.route("/producto/crear").post(createProducto);
+router.route("/producto/crear").post(isAuthenticatedUser,authorizeRoles("admin"),createProducto);
 
 router.route("/producto/:id").put(updateProducto);
 
