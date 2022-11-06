@@ -3,7 +3,8 @@ const ErrorHandler = require("../utils/ErrorHandler.js");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const sendToken = require("../utils/JwtToken");
 const sendMail = require("../utils/sendMail");
-const crypto = require("crypto")
+const crypto = require("crypto");
+const { findById } = require("../models/UsuarioModel");
 
 
 //Registrar usuario 
@@ -140,5 +141,86 @@ exports.resetPassword = catchAsyncErrors(async(req,res,next)=>{
 
     sendToken(usuario,200,res);
 
+})
+
+// Obtener detalles del usuario
+
+exports.userDetails = catchAsyncErrors(async(req,res,next)=>{
+    const usuario = await Usuario.findById(req.usuario.id);
+
+    res.status(200).json({
+        success: true,
+        usuario
+    });
+});
+
+// Actualizar la contraseña del usuario
+exports.updatePassword = catchAsyncErrors(async(req,res,next)=>{
+
+    const usuario = await Usuario.findById(req.usuario.id).select("+contraseña");
+
+    const isPasswordMatched = await usuario.comparePassword(req.body.oldPassword);
+
+    if(!isPasswordMatched){
+        
+        return next(new ErrorHandler("La antigua contraseña ingresada es incorrecta",400));
+    };
+    
+    if(req.body.newPassword !== req.body.confirmPassword){
+        return next(new ErrorHandler("La contraseña no coincide con la anterior",400))
+    }
+
+    usuario.contraseña = req.body.newPassword;
+
+    await usuario.save();
+
+    sendToken(usuario,200,res);
+
+});
+
+// Actualizar informacion del usuario
+
+exports.updateProfile = catchAsyncErrors(async(req,res,next) => {
+    const newUserData = {
+        nombre: req.body.nombre,
+        email: req.body.email,
+    }
+    // usamos cloudinary para agregar el avatar
+    const usuario = await Usuario.findByIdAndUpdate(req.usuario.id,newUserData, {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false 
+    });
+
+    res.status(200).json({
+        success:true
+    })
+});
+
+// Visualizar a todos los usuarios
+
+exports.getAllUsers = catchAsyncErrors(async(req,res,next)=>{
+    const usuarios = await Usuario.find();
+
+    res.status(200).json({
+        success: true,
+        usuarios
+    });
+});
+
+// Visualizar solo a un usuario
+
+exports.getSingleUser = catchAsyncErrors(async (req,res,next)=>{
+    const usuario = await Usuario.findById(req.body.id);
+
+    if(!usuario){
+        return next(new ErrorHandler("Usuario no encontrado con este id",400));
+
+    }
+
+    res.status(200).json({
+        success: true,
+        usuario
+    });
 })
 
