@@ -245,3 +245,22 @@ exports.updateUserRole = catchAsyncErrors(async(req,res,next) => {
     });
 });
 
+
+// Eliminar usuario
+
+exports.deleteUser = catchAsyncErrors(async(req,res,next) => {
+    
+    const usuario = await Usuario.findById(req.params.id)
+    
+    if(!usuario){
+        return next(new ErrorHandler("Usuario no encontrado con este id",400));
+    }
+
+    await usuario.remove(); 
+
+    res.status(200).json({
+        success:true,
+        message: "Usuario eliminado satisfactoriamente"
+    });
+});
+
