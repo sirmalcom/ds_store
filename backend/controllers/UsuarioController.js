@@ -193,7 +193,8 @@ exports.updateProfile = catchAsyncErrors(async(req,res,next) => {
     });
 
     res.status(200).json({
-        success:true
+        success:true,
+        usuario
     })
 });
 
@@ -211,16 +212,36 @@ exports.getAllUsers = catchAsyncErrors(async(req,res,next)=>{
 // Visualizar solo a un usuario
 
 exports.getSingleUser = catchAsyncErrors(async (req,res,next)=>{
-    const usuario = await Usuario.findById(req.body.id);
+    const usuario = await Usuario.findById(req.params.id);
 
     if(!usuario){
         return next(new ErrorHandler("Usuario no encontrado con este id",400));
-
-    }
+    };
 
     res.status(200).json({
         success: true,
         usuario
     });
-})
+});
+
+// Cambiar el rol de un usuario
+
+exports.updateUserRole = catchAsyncErrors(async(req,res,next) => {
+    const newUserData = {
+        nombre: req.body.nombre,
+        email: req.body.email,
+        rol: req.body.rol
+    }
+    
+    const usuario = await Usuario.findByIdAndUpdate(req.params.id,newUserData, {
+        new: true,
+        runValidators: true,
+        useFindAndModify: false 
+    });
+
+    res.status(200).json({
+        success:true,
+        usuario
+    });
+});
 
