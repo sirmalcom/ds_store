@@ -86,4 +86,51 @@ exports.getSingleProducto = catchAsyncErrors(async (req, res, next) => {
     producto,
     productCount
   });
+
+});
+
+// Crear una reseña y actualizarla
+
+exports.createProductReview = catchAsyncErrors(async (req,res,next) => {
+
+  const { rating, comentario, productoId} = req.body;
+
+  const review = {
+    usuario: req.usuario._id,
+    nombre: req.usuario.nombre,
+    rating: Number(rating),
+    comentario: String(comentario)
+  };
+
+  const producto = await Producto.findById(productoId);
+
+  const isReviewed = producto.resenas.find(
+    (rev) => rev.usuario?.toString() === req.usuario._id.toString()
+  );
+
+  if(isReviewed){
+    producto.resenas.forEach((rev)=>{
+      if(rev.usuario._id.toString() === req.usuario._id.toString()){
+       (rev.rating = rating), (rev.comentario = comentario); 
+      } 
+    });
+  } else {
+    producto.resenas.push(review);
+    producto.numeroDeResenas = producto.resenas.length;
+  }
+
+  let avg = 0;
+
+  producto.resenas.forEach((rev)=>{
+    avg += rev.rating
+  });
+
+  producto.ratings = avg / producto.resenas.length;
+
+  await producto.save({validateBeforeSave: false});
+
+  res.status(200).json({
+    success: true
+  }); 
+
 });

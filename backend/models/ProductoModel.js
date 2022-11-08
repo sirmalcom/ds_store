@@ -58,16 +58,16 @@ const productoSchema = new mongoose.Schema({
     },
     resenas:[
         {
-            user:{
+            usuario:{
                 type: mongoose.Schema.ObjectId,
                 ref: "Usuario",
                 required: true
             },
-            name:{
+            nombre:{
                 type: String,
                 required:true
             },
-            resena:{
+            rating:{
                 type:Number,
                 required: true
             },
