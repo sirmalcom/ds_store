@@ -9,9 +9,11 @@ app.use(cookieParser())
 // Importar las rutas
 const producto = require("./routes/ProductoRoute")
 const usuario = require("./routes/UsuarioRoute")
+const pedido = require("./routes/PedidoRoute")
 
 app.use("/api/v2",producto)
 app.use("/api/v2",usuario)
+app.use("/api/v2",pedido)
 
 app.use(ErrorHandler)
 
