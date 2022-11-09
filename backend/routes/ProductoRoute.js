@@ -7,6 +7,8 @@ const {
   deleteProducto,
   getSingleProducto,
   createProductReview,
+  getSingleProductReviews,
+  deleteReview,
 } = require("../controllers/ProductoController");
 const { isAuthenticatedUser,authorizeRoles } = require("../middleware/auth");
 
@@ -23,5 +25,9 @@ router.route("/producto/:id").delete(deleteProducto);
 router.route("/producto/:id").get(getSingleProducto);
 
 router.route("/producto/resena").post(isAuthenticatedUser,createProductReview);
+
+router.route("/resenas").get(getSingleProductReviews);
+
+router.route("/resenas").delete(isAuthenticatedUser,deleteReview,authorizeRoles("admin"));
 
 module.exports = router;

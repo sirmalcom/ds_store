@@ -134,3 +134,68 @@ exports.createProductReview = catchAsyncErrors(async (req,res,next) => {
   }); 
 
 });
+
+// Obtener todas las reseñas de un producto
+
+exports.getSingleProductReviews = catchAsyncErrors(async(req,res,next) => {
+  const producto = await Producto.findById(req.query.id)
+
+  if(!producto){
+    return next(new ErrorHandler("No se encontro el producto con ese id",404));
+  }
+
+  res.status(200).json({
+    success:true,
+    resenas: producto.resenas
+  })
+
+});
+
+// Eliminar Review
+
+exports.deleteReview = catchAsyncErrors(async(req,res,next)=>{
+  const producto = await Producto.findById(req.query.productoId);
+
+  if(!producto){
+    return next(new ErrorHandler("Producto no encontrado con este id",404));
+  }
+
+  const resenas = producto.resenas.filter(
+    (rev) => rev._id.toString() !== req.query.id.toString()
+  );
+
+  let avg  = 0;
+
+  resenas.forEach((rev) => {
+    avg += rev.rating;
+  });
+
+  let ratings = 0;
+
+  if(resenas.length === 0){
+    ratings = 0;
+  }else{
+    ratings = avg / resenas.length;
+  }
+
+  const numeroDeResenas = resenas.length
+
+  await Producto.findByIdAndUpdate(
+    req.query.productoId,
+    {
+      resenas,
+      ratings,
+      numeroDeResenas
+    },
+    {
+      new: true,
+      runValidators: true,
+      useFindAndModify: false
+    }
+  );
+
+  res.status(200).json({
+    success:true
+  });
+
+});
