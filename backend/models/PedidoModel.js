@@ -88,7 +88,7 @@ const pedidoSchema = new mongoose.Schema({
     default: "Procesando",
   },
   enviadoEn: Date,
-  creadoEn: {
+  createdAt: {
     type: Date,
     default: Date.now,
   },
