@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const moment = require('moment-timezone')
+const now = moment(Date.now())
 
 const pedidoSchema = new mongoose.Schema({
   informacionEnvio: {
@@ -61,6 +63,7 @@ const pedidoSchema = new mongoose.Schema({
   },
   pagadoEn: {
     type: Date,
+    //default: now.tz('America/Lima'),
     required: true,
   },
   precioArticulos: {
@@ -72,11 +75,11 @@ const pedidoSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  precioEnvio: {
+  /*precioEnvio: {
     type: Number,
     required: true,
     default: 0,
-  },
+  },*/
   precioTotal: {
     type: Number,
     required: true,
@@ -90,7 +93,7 @@ const pedidoSchema = new mongoose.Schema({
   enviadoEn: Date,
   createdAt: {
     type: Date,
-    default: Date.now,
+    default: Date.now(),
   },
 });
 
