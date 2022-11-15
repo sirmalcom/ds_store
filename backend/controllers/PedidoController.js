@@ -98,7 +98,7 @@ exports.updateAdminOrder = catchAsyncErrors(async (req, res, next) => {
   
     if (req.body.status === "Enviado") {
       pedido.articulosPedido.forEach(async (o) => {
-        await updateStock(o.producto, o.cantidad);
+        await updateStock(o.idProducto, o.cantidad);  
       });
     }
     pedido.estadoPedido = req.body.status;
@@ -117,7 +117,24 @@ exports.updateAdminOrder = catchAsyncErrors(async (req, res, next) => {
       
     const producto = await Producto.findById(id);
   
-    producto.stock -= cantidad;
+    producto.stock = producto.stock - cantidad;
   
     await producto.save({ validateBeforeSave: false });
   }
+
+  // Eliminar pedido 
+
+  exports.deleteOrder = catchAsyncErrors(async (req,res,next) =>{
+
+    const pedido = await Pedido.findById(req.params.id);
+    
+    if(!pedido){
+      return next(new ErrorHandler("Pedido no encontrado con este id", 404));
+    }
+
+    await pedido.remove();
+
+    res.status(200).json({
+        success: true
+    });
+});
