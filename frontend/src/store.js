@@ -1,16 +1,17 @@
 import { createStore, combineReducers, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
-/*import {
+
+import {
   deleteProductReducer,
-  deleteReviewReducer,
+  //deleteReviewReducer,
   newProductReducer,
   newReviewReducer,
   productDetailsReducer,
-  productReviewsReducer,
+  //productReviewsReducer,
   productsReducer,
-} from "./reducers/ProductReducer";
-import { allUsersReducer, forgotPasswordReducer, profileReducer, userDetailsReducer, userReducer } from "./reducers/userReducer";
+} from "./reducers/ProductoReducer";
+/*import { allUsersReducer, forgotPasswordReducer, profileReducer, userDetailsReducer, userReducer } from "./reducers/userReducer";
 import { cartReducer } from "./reducers/CartReducer";
 import { favouriteReducer } from "./reducers/FavouriteReducer";
 import {
@@ -22,19 +23,19 @@ import {
 } from "./reducers/OrderReducer";*/
 
 const reducer = combineReducers({
-  /*products: productsReducer,
+  products: productsReducer,
   productDetails: productDetailsReducer,
-  user: userReducer,
+  /*user: userReducer,
   profile: profileReducer,
   cart: cartReducer,
   favourite: favouriteReducer,
   order: newOrderReducer,
   myOrder: myOrdersReducer,
-  myOrderDetails: orderDetailsReducer,
+  myOrderDetails: orderDetailsReducer,*/
   newReview: newReviewReducer,
   createProduct: newProductReducer,
   deleteProduct: deleteProductReducer,
-  AllOrders: allOrdersReducer,
+  /*AllOrders: allOrdersReducer,
   deleteOrder: orderReducer,
   allUsers: allUsersReducer,
   userDetails: userDetailsReducer,
@@ -44,7 +45,7 @@ const reducer = combineReducers({
 });
 
 let initialState = {
-  /*cart: {
+  cart: {
     cartItems: localStorage.getItem("cartItems")
       ? JSON.parse(localStorage.getItem("cartItems"))
       : [],
@@ -57,7 +58,7 @@ let initialState = {
     favouriteItems: localStorage.getItem("favouriteItems")
       ? JSON.parse(localStorage.getItem("favouriteItems"))
       : [],
-  },*/
+  },
 };
 
 const middleWare = [thunk];
